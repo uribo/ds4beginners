@@ -60,7 +60,7 @@ plot(x, y,
 
 # xの範囲を設定
 x <- seq(-5, 5, by = 0.1)
-y1 <- dnorm(x, mean = 0, sd = 1)
+y1 <- dnorm(x, mean = 0, sd = sqrt(1))
 # グラフを描画
 plot(x, y1, type = "l", 
      lwd = 3,
@@ -71,8 +71,8 @@ plot(x, y1, type = "l",
      main = "正規分布")
 
 # 平均0で分散がそれぞれ0.2、5の正規分布の確率密度関数を計算
-y2 <- dnorm(x, mean = 0, sd = 0.2)
-y3 <- dnorm(x, mean = 0, sd = 5)
+y2 <- dnorm(x, mean = 0, sd = sqrt(0.2))
+y3 <- dnorm(x, mean = 0, sd = sqrt(5))
 plot(x, y1, type = "l", 
      lwd = 3,
      col = "#57467b",
