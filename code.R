@@ -1,30 +1,10 @@
-# xの範囲を設定
-x <- seq(-10, 10, by = 0.1)
 
-# 平均0で標準偏差がそれぞれ1、0.2、5の正規分布の確率密度関数を計算
-y1 <- dnorm(x, mean = 0, sd = 1)
-y2 <- dnorm(x, mean = 0, sd = 0.2)
-y3 <- dnorm(x, mean = 0, sd = 5)
+# 3 -----------------------------------------------------------------------
+data(penguins, package = "palmerpenguins")
 
-# グラフを描画
-plot(x, y1, type = "l", 
-     lwd = 3,
-     col = "#57467b",
-     ylim = c(0, max(y1, y2, y3)), 
-     xlab = "x", 
-     ylab = "Density", 
-     main = "正規分布")
-lines(x, y2, lwd = 3, col = "#7cb4b8")
-lines(x, y3, lwd = 3, col = "#70f8ba")
 
-# 凡例を追加
-legend("topright", 
-       legend = c("標準偏差 = 1", 
-                  "標準偏差 = 0.2", 
-                  "標準偏差 = 5"), 
-       col = c("#57467b", "#7cb4b8", "#70f8ba"), 
-       lty = 1,
-       lwd = 3)
+
+
 
 
 x <- seq(-6, 6, length.out = 100)
@@ -42,8 +22,6 @@ lines(x, y2, col = "red", lwd = 3)
 y3 <- dnorm(x, mean = 0, sd = 5)
 lines(x, y3, col = "blue", lwd = 3)
 
-library(palmerpenguins)
-data("penguins")
 
 
 dplyr::count(penguins, species)
@@ -52,7 +30,7 @@ x <-
 x <- x[!is.na(x)]
 
 p <- 
-  hist(x, breaks = 10) # 体重の値を10個の階級に分ける
+  hist(x, breaks = 10, col = "#57467b") # 体重の値を10個の階級に分ける
 p # グラフの表示
 p$breaks # 階級の幅は200
 
@@ -61,6 +39,58 @@ hist(x, breaks = 5) # 体重の値を5個の階級に分ける
 
 boxplot(x)
 quantile(x)
+
+
+# 4 -----------------------------------------------------------------------
+set.seed(123)
+population <- seq.int(100)
+sample <- sample(population, 10)
+sample
+
+x <- seq.int(6)
+y <- dunif(x, 1, 6)
+plot(x, y, 
+     type = "h", 
+     lwd = 3, 
+     col = "#57467b", 
+     ylim = c(0, 0.2), 
+     xlab = "サイコロの出る目", 
+     ylab = "確率",
+     main = "サイコロの出る目の離散一様分布")
+
+# xの範囲を設定
+x <- seq(-5, 5, by = 0.1)
+y1 <- dnorm(x, mean = 0, sd = 1)
+# グラフを描画
+plot(x, y1, type = "l", 
+     lwd = 3,
+     col = "#57467b",
+     ylim = c(0, 0.5), 
+     xlab = "x", 
+     ylab = "Density", 
+     main = "正規分布")
+
+# 平均0で標準偏差がそれぞれ0.2、5の正規分布の確率密度関数を計算
+y2 <- dnorm(x, mean = 0, sd = 0.2)
+y3 <- dnorm(x, mean = 0, sd = 5)
+plot(x, y1, type = "l", 
+     lwd = 3,
+     col = "#57467b",
+     ylim = c(0, max(c(y1, y2, y3))), 
+     xlab = "x", 
+     ylab = "Density", 
+     main = "正規分布")
+lines(x, y2, lwd = 3, col = "#7cb4b8")
+lines(x, y3, lwd = 3, col = "#70f8ba")
+# 凡例を追加
+legend("topright", 
+       legend = c("標準偏差 = 1", 
+                  "標準偏差 = 0.2", 
+                  "標準偏差 = 5"), 
+       col = c("#57467b", "#7cb4b8", "#70f8ba"), 
+       lty = 1,
+       lwd = 3)
+
 
 x
 mean_x <- 
