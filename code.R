@@ -70,7 +70,7 @@ plot(x, y1, type = "l",
      ylab = "Density", 
      main = "正規分布")
 
-# 平均0で標準偏差がそれぞれ0.2、5の正規分布の確率密度関数を計算
+# 平均0で分散がそれぞれ0.2、5の正規分布の確率密度関数を計算
 y2 <- dnorm(x, mean = 0, sd = 0.2)
 y3 <- dnorm(x, mean = 0, sd = 5)
 plot(x, y1, type = "l", 
@@ -84,9 +84,9 @@ lines(x, y2, lwd = 3, col = "#7cb4b8")
 lines(x, y3, lwd = 3, col = "#70f8ba")
 # 凡例を追加
 legend("topright", 
-       legend = c("標準偏差 = 1", 
-                  "標準偏差 = 0.2", 
-                  "標準偏差 = 5"), 
+       legend = c("分散 = 1", 
+                  "分散 = 0.2", 
+                  "分散 = 5"), 
        col = c("#57467b", "#7cb4b8", "#70f8ba"), 
        lty = 1,
        lwd = 3)
