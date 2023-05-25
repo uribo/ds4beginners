@@ -119,32 +119,66 @@ coefficients(model)
 
 
 # 6 -----------------------------------------------------------------------
-library(jmastats)
-d <- 
-  jmastats::jma_collect(item = "daily", block_no = 47895, year = 2022, month = 5) |> 
-  dplyr::select(pressure, humidity, temperature, weather_time) |> 
-  tidyr::unnest(cols = c(pressure, humidity, temperature, weather_time)) |> 
-  dplyr::select(1, 3, 5, 8, 9) |> 
-  dplyr::rename_with(~ c("pressure", "humidity", "temperature", 
-                         "weatherdaytime", "weathernighttime")) |> 
-  dplyr::mutate(weather = dplyr::if_else(stringr::str_detect(weatherdaytime, "雨") | stringr::str_detect(weathernighttime, "雨"),
-                                         "雨",
-                                         "雨以外") |> 
-                  as.factor()) |> 
-  dplyr::select(!c(weatherdaytime, weathernighttime))
-  
+# library(jmastats)
+# stations |> View()
+# d <-
+#   jmastats::jma_collect(item = "daily", block_no = 47895, year = 2022, month = 5) |>
+#   dplyr::bind_rows(
+#     jmastats::jma_collect(item = "daily", block_no = 47891, year = 2022, month = 5),
+#     jmastats::jma_collect(item = "daily", block_no = 47887, year = 2022, month = 5),
+#     jmastats::jma_collect(item = "daily", block_no = 47893, year = 2022, month = 5)
+#   ) |> 
+#   dplyr::select(pressure, humidity, temperature, weather_time) |>
+#   tidyr::unnest(cols = c(pressure, humidity, temperature, weather_time)) |>
+#   dplyr::select(1, 3, 5, 8, 9) |>
+#   dplyr::rename_with(~ c("pressure", "humidity", "temperature",
+#                          "weatherdaytime", "weathernighttime")) |>
+#   dplyr::mutate(weather = dplyr::if_else(stringr::str_detect(weatherdaytime, "雨") | stringr::str_detect(weathernighttime, "雨"),
+#                                          "雨",
+#                                          "雨以外") |>
+#                   as.factor()) |>
+#   dplyr::select(!c(weatherdaytime, weathernighttime))
+
+#d |> readr::write_csv("weather.csv")
+
+df_weather <-
+  readr::read_csv("weather.csv", col_types = readr::cols(weather = readr::col_character(), 
+                                                   pressure = readr::col_double(), 
+                                                   humidity = readr::col_double(), 
+                                                   temperature = readr::col_double())) |> 
+  dplyr::mutate(weather = as.factor(weather) |> forcats::fct_rev())
+
+
+# 数値としての扱われ方を確認... 1が雨、2が雨以外
+# df_weather$weather |> as.numeric() |> table()
 
 # ロジスティック回帰モデルの作成
-model <- glm(weather ~ temperature + humidity + pressure, data=d, family=binomial)
+model <- 
+  glm(weather ~ temperature + humidity + pressure, data = df_weather, family = binomial)
 summary(model)
+# 1に近ければ「雨」
+# 0から1までの値を出力するようにtype = "response"を指定
+head(predict(model, type = "response"))
+df_weather$weather[1:5]
+contrasts(df_weather$weather)
 
+# 散布図を描画し、データの傾向を確認
+library(ggplot2)
+p <- ggplot(df_weather) +
+  aes(humidity, as.numeric(weather)-1) +
+  geom_point() +
+  ylab("weather")
+p + stat_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE)
+
+
+# 新しいデータをもとに「雨」の確率を求める
 # 新しい天気のデータ
-new_weather <- data.frame(temperature = 16.3, humidity = 30, pressure = 1012)
-
-# 晴れる確率の予測
+new_weather <- data.frame(temperature = 14.1, humidity = 88, pressure = 1001)
 predicted_prob <- predict(model, newdata = new_weather, type = "response")
 predicted_prob
 
+# 1- にすることで「雨以外」の確率を求める
 1 - predict(model, 
-        newdata = data.frame(temperature = 15.1, humidity = 68, pressure = 1020), 
+        newdata = data.frame(temperature = 22.6, humidity = 28, pressure = 1023), 
         type = "response")
+
