@@ -116,3 +116,35 @@ wind_speed <- c(2, 3, 4, 6, 3, 1)
 model <- lm(icecream_sales ~ temperature + humidity + wind_speed)
 
 coefficients(model)
+
+
+# 6 -----------------------------------------------------------------------
+library(jmastats)
+d <- 
+  jmastats::jma_collect(item = "daily", block_no = 47895, year = 2022, month = 5) |> 
+  dplyr::select(pressure, humidity, temperature, weather_time) |> 
+  tidyr::unnest(cols = c(pressure, humidity, temperature, weather_time)) |> 
+  dplyr::select(1, 3, 5, 8, 9) |> 
+  dplyr::rename_with(~ c("pressure", "humidity", "temperature", 
+                         "weatherdaytime", "weathernighttime")) |> 
+  dplyr::mutate(weather = dplyr::if_else(stringr::str_detect(weatherdaytime, "雨") | stringr::str_detect(weathernighttime, "雨"),
+                                         "雨",
+                                         "雨以外") |> 
+                  as.factor()) |> 
+  dplyr::select(!c(weatherdaytime, weathernighttime))
+  
+
+# ロジスティック回帰モデルの作成
+model <- glm(weather ~ temperature + humidity + pressure, data=d, family=binomial)
+summary(model)
+
+# 新しい天気のデータ
+new_weather <- data.frame(temperature = 16.3, humidity = 30, pressure = 1012)
+
+# 晴れる確率の予測
+predicted_prob <- predict(model, newdata = new_weather, type = "response")
+predicted_prob
+
+1 - predict(model, 
+        newdata = data.frame(temperature = 15.1, humidity = 68, pressure = 1020), 
+        type = "response")
