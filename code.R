@@ -2,11 +2,6 @@
 # 3 -----------------------------------------------------------------------
 data(penguins, package = "palmerpenguins")
 
-
-
-
-
-
 x <- seq(-6, 6, length.out = 100)
 y <- dnorm(x, mean = 0, sd = 1)
 plot(x, y, type = "l", lwd = 3,
@@ -100,3 +95,24 @@ conf_int_x <- t.test(x)$conf.int
 print(paste("Confidence interval:", conf_int_x[1], "to", conf_int_x[2]))
 
 
+# 5 -----------------------------------------------------------------------
+# 気温のデータを作成
+temperature <- seq(18, 40, 4)
+# アイスクリームの売り上げのデータを作成
+icecream_sales <- c(28, 45, 72, 82, 96, 100)
+# 散布図の作成
+plot(temperature, icecream_sales)
+
+# 単回帰モデルの構築
+model <- lm(icecream_sales ~ temperature)
+
+# 回帰直線の追加
+abline(model)
+
+predict(model, data.frame(temperature = 30))
+
+humidity <- c(0.65, 0.8, 0.75, 0.85, 0.9, 0.8)
+wind_speed <- c(2, 3, 4, 6, 3, 1)
+model <- lm(icecream_sales ~ temperature + humidity + wind_speed)
+
+coefficients(model)
