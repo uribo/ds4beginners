@@ -168,8 +168,7 @@ p <- ggplot(df_weather) +
   aes(humidity, as.numeric(weather)-1) +
   geom_point() +
   ylab("weather")
-p + stat_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE)
-
+p + stat_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE, color = "#57467b")
 
 # 新しいデータをもとに「雨」の確率を求める
 # 新しい天気のデータ
